@@ -20,9 +20,8 @@ namespace Sapal.Cad.Plugin.Validation
                 result.AddError("tipo_elemento no corresponde a una linea soportada.");
             }
 
-            string expectedTipoRed;
-            if (!string.IsNullOrWhiteSpace(data.TipoElemento) &&
-                Catalogs.TipoRedPorTipoElemento.TryGetValue(data.TipoElemento, out expectedTipoRed) &&
+            var expectedTipoRed = Catalogs.ResolveTipoRed(data.TipoElemento);
+            if (!string.IsNullOrWhiteSpace(expectedTipoRed) &&
                 !string.Equals(data.TipoRed, expectedTipoRed, StringComparison.OrdinalIgnoreCase))
             {
                 result.AddError("tipo_red no corresponde al tipo_elemento seleccionado.");

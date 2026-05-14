@@ -16,8 +16,8 @@ namespace Sapal.Cad.Plugin.Services
 
         public void MoveEntityToCatalogLayer(Entity entity, string tipoElemento)
         {
-            string layerName;
-            if (Catalogs.CapaPorTipoElemento.TryGetValue(tipoElemento, out layerName))
+            var layerName = Catalogs.ResolveCapa(tipoElemento);
+            if (!string.IsNullOrWhiteSpace(layerName))
             {
                 entity.Layer = layerName;
             }

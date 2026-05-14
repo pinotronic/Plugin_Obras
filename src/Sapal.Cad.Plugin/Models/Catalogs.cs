@@ -53,5 +53,37 @@ namespace Sapal.Cad.Plugin.Models
             "SAPAL_PLUVIAL",
             "SAPAL_POZOS_DRENAJE"
         };
+
+        public static string ResolveTipoRed(string tipoElemento)
+        {
+            switch ((tipoElemento ?? string.Empty).Trim().ToUpperInvariant())
+            {
+                case LineaAgua:
+                    return "Agua";
+                case LineaDrenaje:
+                    return "Drenaje";
+                case LineaAguaPluvial:
+                    return "Agua Pluvial";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        public static string ResolveCapa(string tipoElemento)
+        {
+            switch ((tipoElemento ?? string.Empty).Trim().ToUpperInvariant())
+            {
+                case LineaAgua:
+                    return "SAPAL_AGUA";
+                case LineaDrenaje:
+                    return "SAPAL_DRENAJE";
+                case LineaAguaPluvial:
+                    return "SAPAL_PLUVIAL";
+                case PozoDrenaje:
+                    return "SAPAL_POZOS_DRENAJE";
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }

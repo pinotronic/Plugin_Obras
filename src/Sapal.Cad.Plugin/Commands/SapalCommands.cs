@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
@@ -18,6 +19,21 @@ namespace Sapal.Cad.Plugin.Commands
         private readonly LayerService _layerService = new LayerService();
         private readonly CadGeometryService _geometryService = new CadGeometryService();
         private readonly SapalDataValidator _validator = new SapalDataValidator();
+
+        [CommandMethod("SAPAL_VERSION")]
+        public void Version()
+        {
+            RunSafely(VersionCore);
+        }
+
+        private void VersionCore()
+        {
+            var document = Application.DocumentManager.MdiActiveDocument;
+            var editor = document.Editor;
+            var assembly = Assembly.GetExecutingAssembly();
+            editor.WriteMessage("\nSAPAL_RED plugin version: {0}", assembly.GetName().Version);
+            editor.WriteMessage("\nSAPAL_RED plugin ruta: {0}", assembly.Location);
+        }
 
         [CommandMethod("SAPAL_CONFIG")]
         public void Config()
@@ -340,8 +356,8 @@ namespace Sapal.Cad.Plugin.Commands
                 editor,
                 "\nTipo de elemento (LINEA_AGUA, LINEA_DRENAJE, LINEA_AGUA_PLUVIAL): ",
                 Catalogs.TiposLinea);
-            string tipoRed;
-            Catalogs.TipoRedPorTipoElemento.TryGetValue(tipoElemento, out tipoRed);
+            var tipoRed = Catalogs.ResolveTipoRed(tipoElemento);
+            editor.WriteMessage("\nTipo seleccionado: {0}; tipo_red asignado: {1}", tipoElemento, tipoRed);
 
             var data = new LineaRedData
             {
