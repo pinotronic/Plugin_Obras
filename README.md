@@ -16,6 +16,10 @@ AutoCAD -> Plugin SAPAL Red -> DWG/DXF -> Extractor DXF -> PostgreSQL/PostGIS ->
 - `docs`: documentacion tecnica y operativa.
 - `samples`: archivos DXF y reportes de ejemplo.
 
+## Documentacion principal
+
+- `docs/06_compilacion_instalacion_autocad.md`: compilacion, ubicacion del DLL, carga en AutoCAD y uso de comandos.
+
 ## AppID XDATA
 
 Todos los datos tecnicos se guardan bajo el AppID:
