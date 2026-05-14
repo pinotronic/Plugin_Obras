@@ -22,6 +22,11 @@ namespace Sapal.Cad.Plugin.Commands
         [CommandMethod("SAPAL_CONFIG")]
         public void Config()
         {
+            RunSafely(ConfigCore);
+        }
+
+        private void ConfigCore()
+        {
             var document = Application.DocumentManager.MdiActiveDocument;
             var database = document.Database;
             var editor = document.Editor;
@@ -38,6 +43,11 @@ namespace Sapal.Cad.Plugin.Commands
 
         [CommandMethod("SAPAL_CAPTURAR_LINEA")]
         public void CapturarLinea()
+        {
+            RunSafely(CapturarLineaCore);
+        }
+
+        private void CapturarLineaCore()
         {
             var document = Application.DocumentManager.MdiActiveDocument;
             var database = document.Database;
@@ -84,6 +94,11 @@ namespace Sapal.Cad.Plugin.Commands
         [CommandMethod("SAPAL_CAPTURAR_POZO")]
         public void CapturarPozo()
         {
+            RunSafely(CapturarPozoCore);
+        }
+
+        private void CapturarPozoCore()
+        {
             var document = Application.DocumentManager.MdiActiveDocument;
             var database = document.Database;
             var editor = document.Editor;
@@ -128,6 +143,11 @@ namespace Sapal.Cad.Plugin.Commands
 
         [CommandMethod("SAPAL_CONSULTAR")]
         public void Consultar()
+        {
+            RunSafely(ConsultarCore);
+        }
+
+        private void ConsultarCore()
         {
             var document = Application.DocumentManager.MdiActiveDocument;
             var database = document.Database;
@@ -176,6 +196,11 @@ namespace Sapal.Cad.Plugin.Commands
 
         [CommandMethod("SAPAL_VALIDAR")]
         public void Validar()
+        {
+            RunSafely(ValidarCore);
+        }
+
+        private void ValidarCore()
         {
             var document = Application.DocumentManager.MdiActiveDocument;
             var database = document.Database;
@@ -245,6 +270,11 @@ namespace Sapal.Cad.Plugin.Commands
         [CommandMethod("SAPAL_LIMPIAR_XDATA")]
         public void LimpiarXData()
         {
+            RunSafely(LimpiarXDataCore);
+        }
+
+        private void LimpiarXDataCore()
+        {
             var document = Application.DocumentManager.MdiActiveDocument;
             var database = document.Database;
             var editor = document.Editor;
@@ -280,6 +310,28 @@ namespace Sapal.Cad.Plugin.Commands
             }
 
             editor.WriteMessage("\nXDATA SAPAL_RED limpiado.");
+        }
+
+        private static void RunSafely(Action action)
+        {
+            var document = Application.DocumentManager.MdiActiveDocument;
+            var editor = document.Editor;
+
+            try
+            {
+                action();
+            }
+            catch (KeyNotFoundException exception)
+            {
+                editor.WriteMessage("\nError SAPAL_RED: clave no encontrada en catalogo interno.");
+                editor.WriteMessage("\nDetalle: {0}", exception.Message);
+                editor.WriteMessage("\nCierre AutoCAD, cargue la ultima DLL compilada y repita el comando.");
+            }
+            catch (System.Exception exception)
+            {
+                editor.WriteMessage("\nError SAPAL_RED: {0}", exception.Message);
+                editor.WriteMessage("\nTipo: {0}", exception.GetType().FullName);
+            }
         }
 
         private LineaRedData ReadLineaData(Editor editor, Entity entity)
