@@ -66,6 +66,33 @@ namespace Sapal.Cad.Plugin.Services
             return values;
         }
 
+        public bool HasAnyXData(Entity entity)
+        {
+            using (var buffer = entity.XData)
+            {
+                return buffer != null && buffer.AsArray().Length > 0;
+            }
+        }
+
+        public IEnumerable<string> ReadRawXData(Entity entity)
+        {
+            var values = new List<string>();
+            using (var buffer = entity.XData)
+            {
+                if (buffer == null)
+                {
+                    return values;
+                }
+
+                foreach (var typedValue in buffer)
+                {
+                    values.Add(typedValue.TypeCode + "=" + (typedValue.Value ?? string.Empty));
+                }
+            }
+
+            return values;
+        }
+
         public void ClearXData(Entity entity)
         {
             entity.XData = new ResultBuffer(new TypedValue((int)DxfCode.ExtendedDataRegAppName, Catalogs.AppId));

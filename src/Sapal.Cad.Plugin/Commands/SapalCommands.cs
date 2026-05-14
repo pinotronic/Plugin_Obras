@@ -68,6 +68,12 @@ namespace Sapal.Cad.Plugin.Commands
                 }
 
                 _xdataService.WriteXData(entity, data.ToDictionary());
+                var savedValues = _xdataService.ReadXData(entity);
+                if (!savedValues.Any())
+                {
+                    editor.WriteMessage("\nAdvertencia: AutoCAD no devolvio datos SAPAL_RED despues de guardar.");
+                }
+
                 _layerService.MoveEntityToCatalogLayer(entity, data.TipoElemento);
                 transaction.Commit();
             }
@@ -107,6 +113,12 @@ namespace Sapal.Cad.Plugin.Commands
                 }
 
                 _xdataService.WriteXData(entity, data.ToDictionary());
+                var savedValues = _xdataService.ReadXData(entity);
+                if (!savedValues.Any())
+                {
+                    editor.WriteMessage("\nAdvertencia: AutoCAD no devolvio datos SAPAL_RED despues de guardar.");
+                }
+
                 _layerService.MoveEntityToCatalogLayer(entity, data.TipoElemento);
                 transaction.Commit();
             }
@@ -140,6 +152,15 @@ namespace Sapal.Cad.Plugin.Commands
                 if (!values.Any())
                 {
                     editor.WriteMessage("\nLa entidad no tiene datos SAPAL_RED.");
+                    if (_xdataService.HasAnyXData(entity))
+                    {
+                        editor.WriteMessage("\nLa entidad tiene XDATA de otra aplicacion o en formato no reconocido:");
+                        foreach (var rawValue in _xdataService.ReadRawXData(entity))
+                        {
+                            editor.WriteMessage("\n  {0}", rawValue);
+                        }
+                    }
+
                     return;
                 }
 
