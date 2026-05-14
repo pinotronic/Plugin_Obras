@@ -2,18 +2,20 @@
 
 Plugin C# para AutoCAD .NET API.
 
-## Compilacion
+## Compilacion con AutoCAD 2027
 
-El proyecto apunta por defecto a AutoCAD 2024:
+El proyecto apunta por defecto a AutoCAD 2027:
 
 ```text
-C:\Program Files\Autodesk\AutoCAD 2024
+C:\Program Files\Autodesk\AutoCAD 2027
 ```
+
+AutoCAD 2027 usa ensamblados .NET modernos, por lo que se requiere el SDK de .NET 10 para compilar.
 
 Si AutoCAD esta instalado en otra ruta, compilar indicando `AutoCADApiPath`:
 
 ```powershell
-dotnet msbuild .\src\Sapal.Cad.Plugin\Sapal.Cad.Plugin.csproj /p:AutoCADApiPath="C:\Program Files\Autodesk\AutoCAD 2024"
+dotnet build .\src\Sapal.Cad.Plugin\Sapal.Cad.Plugin.csproj /p:AutoCADApiPath="C:\Program Files\Autodesk\AutoCAD 2027"
 ```
 
 El plugin resultante se carga en AutoCAD con `NETLOAD`.
