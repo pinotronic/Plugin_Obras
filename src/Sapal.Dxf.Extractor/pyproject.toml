@@ -1,0 +1,25 @@
+[project]
+name = "sapal-dxf-extractor"
+version = "0.1.0"
+description = "Extractor DXF para datos SAPAL_RED almacenados como XDATA."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ezdxf>=1.3.0",
+    "shapely>=2.0.0",
+]
+
+[project.optional-dependencies]
+postgres = [
+    "psycopg[binary]>=3.2.0",
+]
+test = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+sapal-dxf-extractor = "sapal_dxf_extractor.main:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
