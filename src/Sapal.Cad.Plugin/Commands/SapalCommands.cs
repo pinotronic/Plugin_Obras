@@ -263,7 +263,10 @@ namespace Sapal.Cad.Plugin.Commands
 
         private LineaRedData ReadLineaData(Editor editor, Entity entity)
         {
-            var tipoElemento = PromptKeyword(editor, "\nTipo de elemento [LINEA_AGUA/LINEA_DRENAJE/LINEA_AGUA_PLUVIAL]: ", "LINEA_AGUA LINEA_DRENAJE LINEA_AGUA_PLUVIAL");
+            var tipoElemento = PromptCatalogValue(
+                editor,
+                "\nTipo de elemento (LINEA_AGUA, LINEA_DRENAJE, LINEA_AGUA_PLUVIAL): ",
+                Catalogs.TiposLinea);
             string tipoRed;
             Catalogs.TipoRedPorTipoElemento.TryGetValue(tipoElemento, out tipoRed);
 
@@ -301,13 +304,6 @@ namespace Sapal.Cad.Plugin.Commands
             };
         }
 
-        private static string PromptKeyword(Editor editor, string message, string keywords)
-        {
-            var options = new PromptKeywordOptions(message, keywords) { AllowNone = false };
-            var result = editor.GetKeywords(options);
-            return result.Status == PromptStatus.OK ? result.StringResult : string.Empty;
-        }
-
         private static string PromptString(Editor editor, string message, bool required)
         {
             while (true)
@@ -329,6 +325,30 @@ namespace Sapal.Cad.Plugin.Commands
                 }
 
                 editor.WriteMessage("\nEl valor es obligatorio.");
+            }
+        }
+
+        private static string PromptCatalogValue(Editor editor, string message, ISet<string> allowedValues)
+        {
+            while (true)
+            {
+                var result = editor.GetString(new PromptStringOptions(message)
+                {
+                    AllowSpaces = false
+                });
+
+                if (result.Status != PromptStatus.OK)
+                {
+                    return string.Empty;
+                }
+
+                var value = (result.StringResult ?? string.Empty).Trim().ToUpperInvariant();
+                if (allowedValues.Contains(value))
+                {
+                    return value;
+                }
+
+                editor.WriteMessage("\nValor no valido. Use uno de: {0}", string.Join(", ", allowedValues));
             }
         }
 
