@@ -78,6 +78,7 @@ namespace Sapal.Cad.Plugin.Commands
             using (var transaction = database.TransactionManager.StartTransaction())
             {
                 _xdataService.EnsureAppId(database, transaction);
+                _layerService.EnsureRecommendedLayers(database, transaction);
                 var entity = transaction.GetObject(entityResult.ObjectId, OpenMode.ForWrite) as Entity;
                 if (entity == null || !_geometryService.IsSupportedLine(entity))
                 {
@@ -128,6 +129,7 @@ namespace Sapal.Cad.Plugin.Commands
             using (var transaction = database.TransactionManager.StartTransaction())
             {
                 _xdataService.EnsureAppId(database, transaction);
+                _layerService.EnsureRecommendedLayers(database, transaction);
                 var entity = transaction.GetObject(entityResult.ObjectId, OpenMode.ForWrite) as Entity;
                 if (entity == null || !_geometryService.IsSupportedPoint(entity))
                 {
@@ -342,6 +344,15 @@ namespace Sapal.Cad.Plugin.Commands
                 editor.WriteMessage("\nError SAPAL_RED: clave no encontrada en catalogo interno.");
                 editor.WriteMessage("\nDetalle: {0}", exception.Message);
                 editor.WriteMessage("\nCierre AutoCAD, cargue la ultima DLL compilada y repita el comando.");
+            }
+            catch (Autodesk.AutoCAD.Runtime.Exception exception)
+            {
+                editor.WriteMessage("\nError AutoCAD SAPAL_RED: {0}", exception.Message);
+                editor.WriteMessage("\nEstado AutoCAD: {0}", exception.ErrorStatus);
+                if (exception.ErrorStatus == ErrorStatus.KeyNotFound)
+                {
+                    editor.WriteMessage("\nRevise que el dibujo tenga la configuracion SAPAL. Ejecute SAPAL_CONFIG y repita el comando.");
+                }
             }
             catch (System.Exception exception)
             {
